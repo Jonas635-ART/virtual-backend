@@ -79,9 +79,10 @@ print(cursos[0])
 # desde la pos. 0 hasta < 2
 print(cursos[0:2])
 # cursos.append('otra cosa')
-
 # cursos[0] = 'mobile design'
-# en la tupla solamente no podremos alterar los valores pertenencientes a ella PERO si dentro de esta hay una lista u otra coleccion de datos que si se puede modificar entonces si podremos alterar esta sub coleccion sin problemas
+# en la tupla solamente no podremos alterar los valores pertenencientes a ella PERO 
+# si dentro de esta hay una lista u otra coleccion de datos que si se puede modificar 
+# entonces si podremos alterar esta sub coleccion sin problemas
 variada = (1,2,3, [4,5,6])
 
 variada[3][0]='Hola'
