@@ -7,9 +7,7 @@ class ValidadorPrueba(validador.Schema):
     edad = fields.Int()
     soltero = fields.Bool()
     
-    
-    
-   # class Meta:
+    # class Meta:
    #     fields = ['nombre','apellido']
 
 class ValidarUsuarioPrueba(validador.Schema):
