@@ -15,7 +15,7 @@ class BuscarRecetaRequestDTO(validador.Schema):
     nombre = fields.String(required=False)
     estado = fields.Boolean(required=False)
     comensales = fields.Integer(required=False)
-    dificultad = fields.String(required=False, validate=validate.ContainsOnly(choices=['FACIL', 'INTERMEDIO', 
+    dificultad = fields.String(required=False, validate=validate.OneOf(choices=['FACIL', 'INTERMEDIO', 
     'DIFICIL', 'EXTREMO']))
 
 

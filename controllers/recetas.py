@@ -1,7 +1,9 @@
 from flask_restful import Resource, request
 from models.recetas import Receta
-from dtos.receta_dto import RecetaRequestDTO, RecetaResponseDTO
+from dtos.receta_dto import RecetaRequestDTO, RecetaResponseDTO, BuscarRecetaRequestDTO
+from dtos.paginacion_dto import PaginacionRequestDTO
 from config import conexion
+from math import ceil
 class RecetasController(Resource):
     def post(self):
         body = request.get_json()
@@ -33,22 +35,55 @@ class RecetasController(Resource):
 
     def get(self):
       # TODO: agrega paginacion
-      recetas = conexion.session.query(Receta).all()
+      query_params = request.args
+      paginacion = PaginacionRequestDTO().load(query_params)
+      PerPage= paginacion.get('PerPage')
+      page = paginacion.get('page')
+      skip = PerPage * (page - 1)
+
+      recetas = conexion.session.query(Receta).limit(PerPage).offset(skip).all()
+      total = conexion.session.query(Receta).count()
+      itemsxpage = PerPage if total >= PerPage else total
+      totalpages = ceil(total / itemsxpage) if itemsxpage > 0 else None
+
+
       respuesta = RecetaResponseDTO(many=True).dump(recetas)
+
       return {
         'message':'las recetas son:',
+        'paginacion': {
+            'total': total,
+            'itemsxpage': itemsxpage,
+            'totalpages': totalpages
+        },
         'content': respuesta
     }
+
+
 class BuscarRecetaController(Resource):
     def get(self):
         query_params = request.args
-        print(query_params.get('nombre'))
-        recetas = conexion.session.query(Receta).filter_by(**query_params).all()
-        print(recetas)
-        return {
-            'message': ''
-        }
+        try:
+            parametros = BuscarRecetaRequestDTO().load(query_params)
+            print(parametros)
+            recetas2= conexion.session.query(Receta).filter(Receta.nombre.like('%a%')).all()
+            print(recetas2)
+            nombre = parametros.get('nombre','')
+            if parametros.get('nombre') is not None:
+                del parametros['nombre']
+            recetas = conexion.session.query(Receta).filter(Receta.nombre.like('%{}%'.format(nombre))).filter_by(**parametros).all()
+            resultado = RecetaResponseDTO(many=True).dump(recetas)
+            print(recetas)
 
+            return {
+            'message': '',
+            'content': resultado
+            }
+        except Exception as e:
+            return {
+                'message': 'Error en la busqueda',
+                'content': e.args
+            }, 400
 
 
 
