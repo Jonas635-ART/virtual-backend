@@ -39,12 +39,23 @@ class RecetasController(Resource):
       paginacion = PaginacionRequestDTO().load(query_params)
       PerPage= paginacion.get('PerPage')
       page = paginacion.get('page')
+
+      if(PerPage < 1 or page < 1):
+          return {
+              'message': 'Los parametros no aceptan valores negativos'
+          }, 400
+
       skip = PerPage * (page - 1)
 
       recetas = conexion.session.query(Receta).limit(PerPage).offset(skip).all()
+
       total = conexion.session.query(Receta).count()
+      
       itemsxpage = PerPage if total >= PerPage else total
       totalpages = ceil(total / itemsxpage) if itemsxpage > 0 else None
+      PrevPage = page - 1 if page > 1 and page <= totalpages else None
+      NextPage = page + 1 if totalpages > 1 and page < totalpages else None
+      
 
 
       respuesta = RecetaResponseDTO(many=True).dump(recetas)
@@ -54,7 +65,9 @@ class RecetasController(Resource):
         'paginacion': {
             'total': total,
             'itemsxpage': itemsxpage,
-            'totalpages': totalpages
+            'totalpages': totalpages,
+            'PrevPage': PrevPage,
+            'NextPage': NextPage
         },
         'content': respuesta
     }
@@ -85,6 +98,11 @@ class BuscarRecetaController(Resource):
                 'content': e.args
             }, 400
 
+class RecetaController(Resource):
+    def get(self, id):
+        return {
+            'id': id
+        }
 
 
 
