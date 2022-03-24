@@ -15,7 +15,7 @@ class Preparacion(conexion.Model):
     # backref > creara un atributo virtual que solamente se podra llamar desde la clase de la cual estamos creando el relationship para devolver todos sus 'hijos' 
 
     
-    recetas = orm.relationship('Receta', backref='preparaciones')
+    receta = orm.relationship('Receta', backref='preparaciones')
 
 
 

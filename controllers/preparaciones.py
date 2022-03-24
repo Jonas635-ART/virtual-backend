@@ -26,7 +26,16 @@ class PreparacionController(Resource):
            'content': e.args
        }, 400
 
+    def get(self):
 
+        preparacion: Preparacion | None = conexion.session.query(Preparacion).filter_by(id=1).first()
+        print(preparacion)
+        print(preparacion.orden)
+        print(preparacion.receta.nombre)
+        print(preparacion.receta_id)
+        return {
+            'message':'ok'
+        }
 
 
 

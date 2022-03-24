@@ -1,4 +1,5 @@
 from config import validador
+from models.preparaciones import Preparacion
 from models.recetas import Receta
 from marshmallow import fields, validate
 
@@ -19,7 +20,14 @@ class BuscarRecetaRequestDTO(validador.Schema):
     'DIFICIL', 'EXTREMO']))
 
 
+class PreparacionResponseDTO(validador.SQLAlchemyAutoSchema):
+    class Meta:
+        model = Preparacion
 
+class RecetaPreparacionesResponseDTO(validador.SQLAlchemyAutoSchema):
+    preparaciones = fields.Nested(nested=PreparacionResponseDTO, many=True, only=['descripcion', 'orden'])
+    class Meta:
+        model = Receta
 
 
 
