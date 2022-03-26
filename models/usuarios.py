@@ -1,4 +1,3 @@
-from inspect import ClassFoundException
 from config import conexion
 from sqlalchemy import Column, types
 
