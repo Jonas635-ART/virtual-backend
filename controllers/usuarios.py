@@ -1,5 +1,6 @@
 from flask_restful import Resource, request
-from dtos.registro_dto import RegistroDTO
+from dtos.registro_dto import (RegistroDTO, UsuarioResponseDTO, 
+                                LoginDTO)
 from models.usuarios import Usuario
 from config import conexion
 
@@ -9,22 +10,36 @@ class RegistroController(Resource):
      try:
         data = RegistroDTO().load(body)
         nuevoUsuario = Usuario(**data)
+        nuevoUsuario.encriptar_pwd()
         # generar un hash de la contraseña
         conexion.session.add(nuevoUsuario)
         conexion.session.commit()
+        respuesta = UsuarioResponseDTO().dump(nuevoUsuario)
+
         return {
-            'message': 'Usuario registrado exitosamente'
+            'message': 'Usuario registrado exitosamente',
+            'content': respuesta
         }, 201
      except Exception as e:
+        conexion.session.rollback()
         return {
-            'message': 'Error al registrar ususario',
+            'message': 'Error al registrar usuario',
             'content': e.args
         }, 400
 
-
-
-
-
+class LoginController(Resource):
+    def post(self):
+        body = request.get_json()
+        try:
+            data = LoginDTO().load(body)
+            return {
+                'message': 'Bievenido'
+            }
+        except Exception as e:
+            return{
+                'message': 'Credenciales incorrectas',
+                'content': e.args
+            }
 
 
 
