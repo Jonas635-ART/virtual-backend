@@ -1,13 +1,16 @@
 from flask import Flask, render_template
+import flask_cors
 from flask_restful import Api
 from controllers.usuarios import RegistroController, LoginController
 from config import validador, conexion
 from os import environ
 from dotenv import load_dotenv
+from flask_cors import CORS
 
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app=app)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DATABASE_URL')
 
 api = Api(app=app)
