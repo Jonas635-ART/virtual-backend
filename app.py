@@ -1,7 +1,9 @@
 from flask import Flask, render_template
 from flask_jwt import JWT, jwt_required, current_identity
 from flask_restful import Api
-from controllers.usuarios import LoginController, RegistroController, ResetPasswordController
+from controllers.usuarios import(   LoginController, 
+                                    RegistroController, 
+                                    ResetPasswordController)
 from config import validador, conexion
 from os import environ
 from dotenv import load_dotenv
