@@ -7,9 +7,13 @@ from smtplib import SMTP
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from os import environ
+from cryptography.fernet import Fernet
+from datetime import datetime, timedelta
+import json
 # from template import forgot_password
 # from sendgrid.helpers.mail import Email, To, Content, Mail
 
+Fernet
 
 class RegistroController(Resource):
     def post(self):
@@ -69,9 +73,23 @@ class ResetPasswordController(Resource):
             if usuarioEncontrado is not None:
                 # texto = "Hola, este es un mensaje de prueba."
                 mensaje['Subject'] = 'Reiniciar contraseña Monedero APP'
+
+                # Encriptacion de informacion
+                fernet = Fernet(environ.get('FERNET_SECRET_KEY'))
+
+                mensaje_secreto = {
+                    'fecha_caducidad': str(datetime.now()+timedelta(hours=1)),
+                    'id_usuario': usuarioEncontrado.id
+                }
+                mensaje_secreto_str = json.dumps(mensaje_secreto)
+
+                mensaje_encryptado = fernet.encrypt(bytes(mensaje_secreto_str, 'utf-8'))
+                # Fin de encriptacion
+
                 # si queremos un generador de correos con diseño : https://beefree.io/
                 html = open('./email_templates/joshua_template.html').read().format(
-                    usuarioEncontrado.nombre, usuarioEncontrado.correo, environ.get('URL_FRONT'))
+                    usuarioEncontrado.nombre, environ.get('URL_FRONT')+'/reset-password?token='
+                    +mensaje_encryptado.decode('utf-8)'))
 
                 # siempre que queremos agregar un HTML como texto del mensaje tiene que ir despues del texto ya que primero tratara de enviar el ultimo y si no puede enviara el anterior
                 # mensaje.attach(MIMEText(texto, 'plain'))
@@ -103,6 +121,7 @@ class ResetPasswordController(Resource):
                 'message': 'Correo enviado exitosamente'
             }
         except Exception as e:
+            print(e.args)
             return {
                 'message': 'Error al enviar el correo',
                 'content': e.args
