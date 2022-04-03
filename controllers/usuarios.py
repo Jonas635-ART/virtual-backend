@@ -127,6 +127,63 @@ class ResetPasswordController(Resource):
                 'content': e.args
             }
 
+class ConfirmarCambioPassword(Resource):
+    def post(self):
+        body = request.get_json()
+
+        mensaje = MIMEMultipart()
+        email_emisor = environ.get('EMAIL_EMISOR')
+        print(email_emisor)
+        email_password = environ.get('EMAIL_PASSWORD')
+        try:
+            data = ResetPasswordRequestDTO().load(body)
+        
+            usuarioEncontrado = conexion.session.query(
+                Usuario).filter_by(correo=data.get('correo')).first()
+            if usuarioEncontrado is not None:
+               
+                mensaje['Subject'] = 'Confirmacion de cambio de contraseña Monedero APP'
+
+                fernet = Fernet(environ.get('FERNET_SECRET_KEY'))
+
+                mensaje_secreto = {
+                    'fecha_caducidad': str(datetime.now()+timedelta(hours=1)),
+                    'id_usuario': usuarioEncontrado.id
+                }
+                mensaje_secreto_str = json.dumps(mensaje_secreto)
+
+                mensaje_encryptado = fernet.encrypt(bytes(mensaje_secreto_str, 'utf-8'))
+               
+                html = open('./email_templates/confirmar_contraseña.html').read().format(
+                    usuarioEncontrado.nombre, environ.get('URL_FRONT')+'/confirmation-password?token='
+                    +mensaje_encryptado.decode('utf-8)'))
+
+             
+                mensaje.attach(MIMEText(html, 'html'))
+                emisorSMTP = SMTP('smtp.gmail.com', 587)
+                emisorSMTP.starttls()
+               
+                emisorSMTP.login(email_emisor, email_password)
+              
+                emisorSMTP.sendmail(
+                    from_addr=email_emisor,
+                    to_addrs=usuarioEncontrado.correo,
+                    msg=mensaje.as_string()
+                )
+           
+                emisorSMTP.quit()
+                print('Cambio de correo exitoso')
+
+            return {
+                'message': 'Cambio de correo exitoso'
+            }
+        except Exception as e:
+            print(e.args)
+            return {
+                'message': 'Error al cambiar la contraseña de correo',
+                'content': e.args
+            }
+
         # ---------------- UTILIZANDO SENDGRID -----------------
         # try:
         #     data = ResetPasswordRequestDTO().load(body)

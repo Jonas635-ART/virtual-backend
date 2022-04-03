@@ -3,7 +3,8 @@ from flask_jwt import JWT, jwt_required, current_identity
 from flask_restful import Api
 from controllers.usuarios import(   LoginController, 
                                     RegistroController, 
-                                    ResetPasswordController)
+                                    ResetPasswordController,
+                                    ConfirmarCambioPassword)
 from config import validador, conexion
 from models.usuarios import Usuario
 from os import environ
@@ -146,6 +147,7 @@ api.add_resource(RegistroController, '/registro')
 api.add_resource(LoginController, '/login')
 api.add_resource(MovimientoController, '/movimiento', '/movimientos')
 api.add_resource(ResetPasswordController, '/reset-password')
+api.add_resource(ConfirmarCambioPassword, '/confirmation-password')
 
 if(__name__ == '__main__'):
     app.run(debug=True, port=8080)
