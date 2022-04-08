@@ -2,8 +2,10 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.generics import ListAPIView, ListCreateAPIView
-from .serializers import PruebaSerializer, TareaSerializer, EtiquetaSerializer
+from .serializers import PruebaSerializer, TareasSerializer, EtiquetaSerializer, TareasSerializer
 from .models import Etiqueta, Tareas
+from rest_framework import status
+from django.utils import timezone
 
 
 @api_view(http_method_names=['GET', 'POST'])
@@ -49,8 +51,27 @@ class PruebaApiView(ListAPIView):
 
 class TareasApiView(ListCreateAPIView):
     queryset = Tareas.objects.all()
-    serializer_class = TareaSerializer
-    
+    serializer_class = TareasSerializer
+    def post(self, request: Request):
+        serializador = self.serializer_class(data=request.data)
+        if serializador.is_valid():
+            fechaCaducidad = serializador.validated_data.get('fechaCaducidad')
+            print(type(serializador.validated_data.get('fechaCaducidad')))
+            importancia = serializador.validated_data.get('importancia')
+            if importancia < 0 or importancia > 10:
+                return Response(data={
+                    'message': 'la importancia puede ser entre 0 y 10'
+                }, status=status.HTTP_400_BAD_REQUEST)
+            if timezone.now() > fechaCaducidad:
+                return Response(data={'message': 'La fecha no puede ser menor que la fecha actual'},
+                status=status.HTTP_400_BAD_REQUEST)
+            return Response(data='', status=status.HTTP_201_CREATED)
+        else:
+            serializador.errors
+            return Response(data={
+            'message': 'la data no es valida', 
+            'content': serializador.errors},
+            status=status.HTTP_400_BAD_REQUEST)
 class EtiquetasApiView(ListCreateAPIView):
     queryset = Etiqueta.objects.all()
     serializer_class = EtiquetaSerializer
