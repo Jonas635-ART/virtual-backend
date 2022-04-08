@@ -1,8 +1,12 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.request import Request
-from rest_framework.generics import ListAPIView, ListCreateAPIView
-from .serializers import PruebaSerializer, TareasSerializer, EtiquetaSerializer, TareasSerializer
+from rest_framework.generics import ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from .serializers import (  PruebaSerializer, 
+                            TareasSerializer, 
+                            EtiquetaSerializer, 
+                            TareaSerializer,
+                            TareaPersonalizableSerializer)
 from .models import Etiqueta, Tareas
 from rest_framework import status
 from django.utils import timezone
@@ -62,10 +66,14 @@ class TareasApiView(ListCreateAPIView):
                 return Response(data={
                     'message': 'la importancia puede ser entre 0 y 10'
                 }, status=status.HTTP_400_BAD_REQUEST)
+
             if timezone.now() > fechaCaducidad:
                 return Response(data={'message': 'La fecha no puede ser menor que la fecha actual'},
                 status=status.HTTP_400_BAD_REQUEST)
-            return Response(data='', status=status.HTTP_201_CREATED)
+                 # El metodo save() se podra llamar siempre que el serializado sea un ModelSerializer y este servira para poder guardar la informacion actual del serializador en la b
+                serializador.save()
+                
+            return Response(data=serializador.data, status=status.HTTP_201_CREATED)
         else:
             serializador.errors
             return Response(data={
@@ -73,8 +81,23 @@ class TareasApiView(ListCreateAPIView):
             'content': serializador.errors},
             status=status.HTTP_400_BAD_REQUEST)
 class EtiquetasApiView(ListCreateAPIView):
-    queryset = Etiqueta.objects.all()
     serializer_class = EtiquetaSerializer
+    queryset = Etiqueta.objects.all()
+
+class TareaApiView(RetrieveUpdateDestroyAPIView):
+    serializer_class = TareaSerializer
+    queryset = Tareas.objects.all()
+
+
+
+
+
+
+
+
+
+
+
 
 
 

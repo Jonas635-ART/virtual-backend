@@ -44,6 +44,17 @@ class EtiquetaSerializer(serializers.ModelSerializer):
                             'read_only': True}
                             }
         read_only_fields = ['createAt']
+
+class TareaPersonalizableSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tareas
+        fields = '__all__'
+        # exclude = ['nombre'] # funciona tanto para lectura como escritura
+        extra_kwargs = {
+            'nombre': {
+                'read_only': True
+            }
+        }
      
 
 
