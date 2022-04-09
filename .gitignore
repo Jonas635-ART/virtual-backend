@@ -2,4 +2,9 @@ entorno_django
 __pycache___
 entorno_flask/
 .env
+*.jpeg
+*.jpg
+*.png
+
+
 

@@ -56,6 +56,30 @@ class TareaPersonalizableSerializer(serializers.ModelSerializer):
             }
         }
      
+class ArchivoSerializer(serializers.Serializer):
+    archivo = serializers.ImageField(max_length=100, use_url=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,5 +1,10 @@
 from django.urls import path
-from .views import inicio, PruebaApiView, TareasApiView, EtiquetasApiView, TareaApiView
+from .views import (inicio, 
+                    PruebaApiView, 
+                    TareasApiView, 
+                    EtiquetasApiView, 
+                    TareaApiView,
+                    ArchivosApiView)
 
 urlpatterns = [
     path('inicio', inicio),
@@ -7,6 +12,7 @@ urlpatterns = [
     path('tareas', TareasApiView.as_view()),
     path('etiquetas', EtiquetasApiView.as_view()),
     path('tarea/<int:pk>', TareaApiView.as_view()),
+    path('subir-imagen', ArchivosApiView.as_view()),
 ]
 
 

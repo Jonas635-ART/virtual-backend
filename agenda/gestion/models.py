@@ -15,14 +15,17 @@ class Etiqueta(models.Model):
     class Meta:
         # cambiar el nombre de la tabla en la bd (a diferencia del nombre de la clase)
         db_table = 'etiquetas'
-        # modificar el ordernamiento natural (por el id) e imponinendo el propio que sea ASC del nombre, solamente funcionara para cuando hagamos el get usando el ORM
+        # modificar el ordernamiento natural (por el id) e imponinendo el propio que sea ASC del nombre, solamente funcionara 
+        # para cuando hagamos el get usando el ORM
         ordering = ['-nombre']
 
 
 class Tareas(models.Model):
 
     class CategoriaOpciones(models.TextChoices):
-       # cada opcion le podemos pasar dos parametros en la cual el primero sera su abreviatura para que se guarde en la bd y el segundo el nombre completo que se mostrara cuando querramos utilizar los valores en un formulario usando Templates (Jinja) o dentro del formulario de DRF
+       # cada opcion le podemos pasar dos parametros en la cual el primero sera su abreviatura para que se guarde en la bd 
+       # y el segundo el nombre completo que se mostrara cuando querramos 
+       # utilizar los valores en un formulario usando Templates (Jinja) o dentro del formulario de DRF
         TODO = 'TODO', 'TO_DO'
         IN_PROGRESS = 'IP', 'IN_PROGRESS'
         DONE = 'DONE', 'DONE'
@@ -48,9 +51,11 @@ class Tareas(models.Model):
     createdAt = models.DateTimeField(auto_now_add=True, db_column='created_at')
     updatedAt = models.DateTimeField(auto_now=True, db_column='updated_at')
 
-    # En Django se puede utilizar las relaciones one-to-one, one-to-many o many-to-many para crear las relaciones entre las tablas, aca ya no es necesario usar las relationships porque ya estan integradas dentro de la relacion
+    # En Django se puede utilizar las relaciones one-to-one, one-to-many o many-to-many para crear las relaciones entre las tablas, 
+    # aca ya no es necesario usar las relationships porque ya estan integradas dentro de la relacion
     etiquetas = models.ManyToManyField(to=Etiqueta, related_name='tareas')
 
+    foto = models.ImageField(upload_to='multimedia', null=True)
     class Meta:
         db_table = 'tareas'
 
