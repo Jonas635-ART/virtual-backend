@@ -55,7 +55,10 @@ class Tareas(models.Model):
     # aca ya no es necesario usar las relationships porque ya estan integradas dentro de la relacion
     etiquetas = models.ManyToManyField(to=Etiqueta, related_name='tareas')
 
-    foto = models.ImageField(upload_to='multimedia', null=True)
+    foto = models.ImageField(
+        upload_to='multimedia',
+        null=True
+    )
     class Meta:
         db_table = 'tareas'
 

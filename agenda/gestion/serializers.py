@@ -11,6 +11,12 @@ class PruebaSerializer(serializers.Serializer):
     # dni = serializers.IntegerField(min_value=10000000, max_value=99999999) 
 
 class TareasSerializer(serializers.ModelSerializer):
+    # Modifico la configuracion del modelo y le puedo setear la nueva configuracion 
+    # que respetera el serializador, no se puede hacer cambios de tipos de datos muy
+    #  drasticos (x ejemplo: si en el modelo es un IntegerField en el serializador 
+    # no podre cambiarlo a CharField porque me lanzara un error al momento de guardar la data)
+
+    foto = serializers.CharField(max_length=100)
     class Meta:
         model = Tareas
         fields = '__all__'
@@ -59,9 +65,9 @@ class TareaPersonalizableSerializer(serializers.ModelSerializer):
 class ArchivoSerializer(serializers.Serializer):
     archivo = serializers.ImageField(max_length=100, use_url=True)
 
+class EliminarArchivoSerializer(serializers.Serializer):
 
-
-
+    archivo = serializers.CharField(max_length=100)
 
 
 
