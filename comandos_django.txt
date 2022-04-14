@@ -26,4 +26,6 @@ del archivo ademas se puede poner la clase hasta colocar el nombre de que unico 
 dentro de la clase
 https://docs.djangoproject.com/en/3.2/topics/migrations/#reversing-migrations
 NOTA:
+No se puede crear aplicaciones con los nombres de las aplicaciones de Django: auth, contenttypes, message, users, admin, sessions, staticfiles
+
 python manage.py migrate NOMBRE_APP NUMERO_MIGRACION > efectuar dicha migracion o se puede revertir hasta la migracion seleccionada (todas las migraciones efectuadas queden sin efecto) si queremos revetir absolutamente todas las migraciones podemos colocar en NUMERO_MIGRACION zero, LA TABLA DJANGO_MIGRATIONS NUNCA SE TOCA
