@@ -14,6 +14,12 @@ from pathlib import Path
 from os import environ
 from datetime import timedelta
 from dotenv import load_dotenv
+# para crear la configuracion entre mi proyecto y cloudinary
+import cloudinary
+# estare indicando que voy a poder subir imagenes
+import cloudinary.uploader
+# podre usar la API de cloudinary
+import cloudinary.api
 
 
 load_dotenv()
@@ -44,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'cloudinary',
     'autorizacion',
     'fact_electr',
     'menu' 
@@ -119,7 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Lima'
 
 USE_I18N = True
 
@@ -137,13 +144,67 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'autorizacion.Usuario'
+
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    }
+    ]
 }
 # sirve para cambiar la configuracion de jWT
 
 SIMPLE_JWT= {
-    'ACCESS_TOKEN_LIFETIME' : timedelta(hours=1)
+  'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5, hours=1),
+    'ALGORITHM': 'HS384',
 }
+cloudinary.config(
+    cloud_name=environ.get('CLOUDINARY_NAME'),
+    api_key=environ.get('CLOUDINARY_API_KEY'),
+    api_secret=environ.get('CLOUDINARY_SECRET')
+)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
