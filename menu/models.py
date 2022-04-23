@@ -13,6 +13,7 @@ class Plato(models.Model):
     class Meta:
         db_table = 'platos'
 
+
 class Stock(models.Model):
     id = models.AutoField(primary_key=True)
     fecha = models.DateField(null=False)
@@ -40,17 +41,3 @@ class Stock(models.Model):
         # 2022-04-18 |   2      ✅
         # 2022-04-19 |   1      ✅
         unique_together = [['fecha', 'platoId']]
-
-    
-
-
-
-
-
-
-
-
-
-
-
-

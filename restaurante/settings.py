@@ -10,9 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 from os import environ
-from datetime import timedelta
 from dotenv import load_dotenv
 # para crear la configuracion entre mi proyecto y cloudinary
 import cloudinary
@@ -20,7 +20,6 @@ import cloudinary
 import cloudinary.uploader
 # podre usar la API de cloudinary
 import cloudinary.api
-
 
 load_dotenv()
 
@@ -32,12 +31,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-h^(ko))tx*=xjacqvfc6^s7b-!^b&$lh!5i-03p9799h#(hil_'
+SECRET_KEY = 'django-insecure-o6eowq^rep5$^*zyz116t8o_c34$&^3j%qm1$rtu3pfe%y-)c7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -49,16 +48,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #librerias
     'rest_framework',
     'cloudinary',
-    'autorizacion',
+    'corsheaders',
+    #aplicaciones
     'fact_electr',
-    'menu' 
+    'menu',
+    'autorizacion',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -143,37 +147,40 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# sirve para definir cuando modificamos el contenido del modelo auth_user indicar ahora a cual tiene que hacer caso
 AUTH_USER_MODEL = 'autorizacion.Usuario'
 
+# sirve para toda la configuracion de nuestro DjangoRestFramework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ]
 }
-# sirve para cambiar la configuracion de jWT
 
-SIMPLE_JWT= {
-  'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5, hours=1),
+# sirve para modificar las configuraciones iniciales de simplejwt
+# https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5, hours=1),
     'ALGORITHM': 'HS384',
+    # 'SIGNING_KEY': 'mimamamemima'
 }
+
+# https://cloudinary.com/documentation/django_integration#installation
 cloudinary.config(
     cloud_name=environ.get('CLOUDINARY_NAME'),
     api_key=environ.get('CLOUDINARY_API_KEY'),
     api_secret=environ.get('CLOUDINARY_SECRET')
 )
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+STATIC_ROOT = BASE_DIR / 'static_files'
 
+#CORS_ORIGIN_ALLOW_ALL = True
 
-
-
-
-
-
-
-
-
-
+CORS_ALLOWED_ORIGINS = ['http://127.0.0.1:5500']
+CORS_ALLOWED_METHODS = ['GET', 'POST'] # No el metodo PUT O DELETE
+CORS_ALLOWED_HEADERS = ['content-type', 'authorization', 'origin']
 
 
 

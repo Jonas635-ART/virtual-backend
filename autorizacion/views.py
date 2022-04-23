@@ -7,52 +7,13 @@ from rest_framework import status
 
 class RegistroUsuarioApiView(CreateAPIView):
     serializer_class = RegistroUsuarioSerializer
+
     def post(self, request: Request):
         data = self.serializer_class(data=request.data)
+
         data.is_valid(raise_exception=True)
         data.save()
         return Response(data={
             'message': 'Usuario creado exitosamente',
             'content': data.data
         }, status=status.HTTP_201_CREATED)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

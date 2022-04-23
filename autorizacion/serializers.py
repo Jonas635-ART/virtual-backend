@@ -7,13 +7,14 @@ class RegistroUsuarioSerializer(serializers.ModelSerializer):
     def save(self):
         # creo una instancia de mi usuario con los campos ya validados (validated_data)
         nuevoUsuario = Usuario(**self.validated_data)
-         # encripto la password
+
+        # encripto la password
         nuevoUsuario.set_password(self.validated_data.get('password'))
+
         # guardo el usuario en la bd
         nuevoUsuario.save()
 
         return nuevoUsuario
-
 
     class Meta:
         model = Usuario
@@ -28,43 +29,3 @@ class RegistroUsuarioSerializer(serializers.ModelSerializer):
                 'read_only': True
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
