@@ -1,8 +1,9 @@
 import {Prisma} from "../prisma.js";
-import { usuarioRequestDTO, loginRequestDTO } from "../dtos/usuarios.dto.js"
+import { usuarioRequestDTO, loginRequestDTO,  } from "../dtos/usuarios.dto.js"
 import { hashSync, compareSync } from 'bcrypt';
 import jsonwebtoken from "jsonwebtoken";
 import { enviarCorreoValidacion } from "../utils/sendMail.js";
+import cryptojs from "crypto-js";
 
 
 export const crearUsuario = async (req, res) => {
@@ -20,9 +21,15 @@ export const crearUsuario = async (req, res) => {
                 validado: true,
             } ,
         });
+        const hash = cryptojs.AES.encrypt(JSON.stringify({
+            nombre: nuevoUsuario.nombre, 
+            email: nuevoUsuario.email }),
+        process.env.LLAVE_ENCRIPTACION,
+        ).toString();
+
         await enviarCorreoValidacion({
             destinatario: nuevoUsuario.email,
-            hash: "123123123",
+            hash,
           });
 
         return res.status(201).json(nuevoUsuario);
@@ -76,9 +83,46 @@ export const login = async (req, res) => {
         });
         }
     }
-}
+};
 
+export const confirmarCuenta = async (req, res) => {
+    try {
+        const data = req.body;
+        const informacion = JSON.parse(cryptojs.AES.decrypt(
+            data.hash,
+            process.env.LLAVE_ENCRIPTACION
+        ).toString(cryptojs.enc.Utf8));
 
+        console.log(informacion)
+        
+        const usuarioEncontrado = await Prisma.usuario.findFirst({
+            where: {
+                email: informacion.email, 
+                validado:false},
+            select:{ id:true
+            },
+        });
+        if(!usuarioEncontrado){
+            throw new Error("El usuario ya fue validado");
+        }
+        await Prisma.usuario.update({
+            where: { id: usuarioEncontrado.id },
+            data: { validado: true },
+        });
+
+        return res.json({
+            message: "Cuenta validada exitosamente"
+        });
+    } catch(error){
+        if(error instanceof Error){
+            return res.status(400).json({
+                message: "Error al validar la cuenta.",
+                content: error.message,
+            });
+        }
+
+    }
+};
 
 
 

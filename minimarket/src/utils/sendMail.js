@@ -15,18 +15,18 @@ const trasporter = nodemailer.createTransport({
     },
 });
 
-export const enviarCorreoValidacion = ({ remitente, hash }) => {
+export const enviarCorreoValidacion = async ({ destinatario, hash }) => {
     // Pagina para generar plantillas html > https://beefree.io/
     const html = `
     <p>
         Hola para comenzar a disfrutar de todas las ofertas en nuestro Minimarket, por favor haz click en el siguiente enlace   
-            <a href="https://www.google.com">
+            <a href="${process.env.FRONTEND_URL}?hash=${hash}">
                 Valida mi cuenta.
             </a>
     </p>`;
     try{
-     await trasporter.sendMail({
-         from: 'edriveroman@gmail.com',
+      await trasporter.sendMail({
+         from: 'jonasazula8901@gmail.com',
          to: destinatario,
          subject: "Avlidacion de correo de minimarket APP",
          html,
