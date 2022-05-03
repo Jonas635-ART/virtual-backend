@@ -1,6 +1,7 @@
 import express, { json } from "express";
 import { productosRouter } from "./routes/productos.routes.js"
 import { usuarioRouter } from "./routes/usuarios.routes.js"
+import { pedidosRouter } from "./routes/pedidos.routes.js";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.get('/', (req, res) => {
 
 app.use(productosRouter);
 app.use(usuarioRouter);
+app.use(pedidosRouter);
 
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en el puerto ${PORT}`);

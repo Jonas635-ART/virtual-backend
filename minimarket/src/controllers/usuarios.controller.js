@@ -1,5 +1,5 @@
 import {Prisma} from "../prisma.js";
-import { usuarioRequestDTO, loginRequestDTO,  } from "../dtos/usuarios.dto.js"
+import { usuarioRequestDTO, loginRequestDTO } from "../dtos/usuarios.dto.js"
 import { hashSync, compareSync } from 'bcrypt';
 import jsonwebtoken from "jsonwebtoken";
 import { enviarCorreoValidacion } from "../utils/sendMail.js";
@@ -59,7 +59,7 @@ export const login = async (req, res) => {
                 id: usuarioEncontrado.id, 
                 mensaje:"Api de minimarket",
             }, 
-            'llave_secreta',
+            process.env.JWT_SECRET,
             {expiresIn: "1y"}
             );
             // el expiresIn recibe un numero (sera expresado en segundo) y si le pasamos un string:
@@ -124,6 +124,14 @@ export const confirmarCuenta = async (req, res) => {
     }
 };
 
+export const perfil = async (req, res) => {
+    console.log(req.user);
+
+    return res.json({
+        message: "Bienvenido",
+        content: req.user, 
+    });
+};
 
 
 
