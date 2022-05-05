@@ -6,7 +6,7 @@ export const crearProducto = async (req, res) => {
     try {
         const nuevoProducto = await Prisma.producto.create({ data: req.body });
 
-        console.log(resultado);
+        console.log(nuevoProducto);
 
         console.log("Yo me ejecuto al ultimo");
 
