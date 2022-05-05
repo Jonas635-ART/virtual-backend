@@ -56,7 +56,7 @@ export const crearPreferencia = async (req, res) => {
         });
 
         await Prisma.pedido.update({
-          data: { process_id": preferencia.body.id, estado: "CREADO" }, 
+          data: { processId: preferencia.body.id, estado: "CREADO" },
           where: { id: pedidoId },
         });
 
@@ -92,14 +92,30 @@ export const MercadoPagoWebhooks = async (req, res) => {
   console.log("---queryparams---");
   console.log(req.query);
 
-  if(req.query.topic === 'merchant_order') {
-    const { id } = req.query
+  if (req.query.topic === "merchant_order") {
+    const { id } = req.query;
+    // https://api.mercadolibre.com/merchant_orders/{id}
+    const orden_comercial = await mercadopago.merchant_orders.get(id);
+    console.log("la orden es:");
+    console.log(orden_comercial);
 
-    const orden_comercial = await mercadopago.merchant_orders.get(id)
-    console.log("La orden es:");
-    console.log(orden_comercial);  
+    const pedido = await Prisma.pedido.findFirst({
+      where: { processId: orden_comercial.body.preference_id },
+    });
+
+    if (!pedido) {
+      // aca enviare un correo al area de ventas para que haga una validacion manual del porque no se encuentra ese pago que me esta enviando MercadoPago
+      console.log("Pedido incorrecto");
+    }
+
+    if (orden_comercial.body.order_status === "paid") {
+      // cambiamos el estado de nuestro pedido a pagado
+      await Prisma.pedido.updateMany({
+        where: { processId: orden_comercial.body.preference_id },
+        data: { estado: "PAGADO" },
+      });
+    }
   }
-
   return res.status(201).json({
     message: "Webhook recibido exitosamente",
   });
