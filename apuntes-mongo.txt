@@ -1,0 +1,20 @@
+db => mostrara en que base de datos estamos trabajando
+use NOMBRE_BD => nos moveremos a esa base de datos y si no existe la creara
+show dbs -> Muestra todas las bases de datos del servidor
+db.TABLA.insertOne({...}) => insertara un nuevo registro en esa coleccion (TABLA) en la bd y si no existe, creara esa TABLA
+db.TABLA.insertMany([{..}]) -> Inserta varios registros en esa tabla en la bd.
+db.TABLA.find() -> devuelve todos los registros de la tabla
+
+
+
+
+
+
+
+
+
+
+
+
+
+
