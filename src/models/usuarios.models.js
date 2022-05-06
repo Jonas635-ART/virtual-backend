@@ -1,4 +1,5 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
+import bcryptjs from "bcryptjs";
 // Toda esta configuracion que estamos haciendo es solamente a nivel de mongoose
 const usuarioSchema = new mongoose.Schema({
     correo: {
@@ -17,10 +18,8 @@ const usuarioSchema = new mongoose.Schema({
     },
     password: {
         type: mongoose.Schema.Types.String,
-        set: (valorActual) => {
-            console.log(valorActual); 
-            return "hola";
-        },
+        set: (valorActual) => bcryptjs.hashSync(valorActual, 10),
+         
     },
 });
 
