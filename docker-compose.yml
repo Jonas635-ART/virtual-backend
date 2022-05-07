@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  api-librero:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    ports: 
+     - 5000:3000
+    volumes:
+     - ./src:/app/src
+    depends_on:
+      - basededatos-mongo
+    env_file: .env  
+    environment:
+      - MONGO_URL=mongodb://jonas:pAR123@basededatos-mongo:27017
+      - DBNAME=librero
+
+  basededatos-mongo:
+   image: mongo:latest
+   ports:
+    - 3000:27017
+
+   environment:
+    MONGO_INITDB_ROOT_USERNAME: jonas
+    MONGO_INITDB_ROOT_PASSWORD: pAR123
+    MONGO_INITDB_DATABASE: librero
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
